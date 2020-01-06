@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<title><%= title %></title>
+	</head>
+	<style>
+		.u-feature,
+		.u-referer {
+			word-break: break-all;
+		}
+	</style>
+	<body>
+		<div id="app">
+			<h3>获取浏览器指纹数据[点击内容复制]:</h3>
+			<div class="u-feature"></div>
+
+			<h3>浏览器referer:</h3>
+			<div class="u-referer"></div>
+		</div>
+		<script>!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{("undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof self?self:this).copyToClipboard=e()}}(function(){return function(){return function e(t,n,o){function r(a,i){if(!n[a]){if(!t[a]){var u="function"==typeof require&&require;if(!i&&u)return u(a,!0);if(c)return c(a,!0);var l=new Error("Cannot find module '"+a+"'");throw l.code="MODULE_NOT_FOUND",l}var s=n[a]={exports:{}};t[a][0].call(s.exports,function(e){return r(t[a][1][e]||e)},s,s.exports,e,t,n,o)}return n[a].exports}for(var c="function"==typeof require&&require,a=0;a<o.length;a++)r(o[a]);return r}}()({1:[function(e,t,n){"use strict";var o=e("toggle-selection"),r="Copy to clipboard: #{key}, Enter";t.exports=function(e,t){var n,c,a,i,u,l,s=!1;t||(t={}),n=t.debug||!1;try{if(a=o(),i=document.createRange(),u=document.getSelection(),(l=document.createElement("span")).textContent=e,l.style.all="unset",l.style.position="fixed",l.style.top=0,l.style.clip="rect(0, 0, 0, 0)",l.style.whiteSpace="pre",l.style.webkitUserSelect="text",l.style.MozUserSelect="text",l.style.msUserSelect="text",l.style.userSelect="text",document.body.appendChild(l),i.selectNode(l),u.addRange(i),!document.execCommand("copy"))throw new Error("copy command was unsuccessful");s=!0}catch(o){n&&console.error("unable to copy using execCommand: ",o),n&&console.warn("trying IE specific stuff");try{window.clipboardData.setData("text",e),s=!0}catch(o){n&&console.error("unable to copy using clipboardData: ",o),n&&console.error("falling back to prompt"),c=function(e){var t=(/mac os x/i.test(navigator.userAgent)?"⌘":"Ctrl")+"+C";return e.replace(/#{\s*key\s*}/g,t)}("message"in t?t.message:r),window.prompt(c,e)}}finally{u&&("function"==typeof u.removeRange?u.removeRange(i):u.removeAllRanges()),l&&document.body.removeChild(l),a()}return s}},{"toggle-selection":2}],2:[function(e,t,n){t.exports=function(){var e=document.getSelection();if(!e.rangeCount)return function(){};for(var t=document.activeElement,n=[],o=0;o<e.rangeCount;o++)n.push(e.getRangeAt(o));switch(t.tagName.toUpperCase()){case"INPUT":case"TEXTAREA":t.blur();break;default:t=null}return e.removeAllRanges(),function(){"Caret"===e.type&&e.removeAllRanges(),e.rangeCount||n.forEach(function(t){e.addRange(t)}),t&&t.focus()}}},{}]},{},[1])(1)});</script>
+		<script src="https://cdn.bootcss.com/axios/0.19.0/axios.min.js"></script>
+		<script>
+			var targetNode = document.querySelector('head');
+			var observer = new MutationObserver(function(mutations) {
+				if (targetNode.innerHTML.indexOf('/dfprs-collect/fp/porto.json') > -1) {
+					console.log('>>> 拦截成功\n', targetNode.innerHTML);
+					var reg = /(?<=feature=).+(?=")/;
+					var feature = targetNode.innerHTML.match(reg)[0];
+					var referer = location.href;
+					document.querySelector('.u-feature').innerHTML = feature;
+					document.querySelector('.u-referer').innerHTML = referer;
+					
+					document.querySelector('.u-feature').addEventListener('click', () => {
+						copyToClipboard(feature);
+						window.alert('复制成功')
+					})
+
+					document.querySelector('.u-referer').addEventListener('click', () => {
+						copyToClipboard(referer);
+						window.alert('复制成功')
+					})
+				}
+			});
+
+			observer.observe(targetNode, {
+				attributes: true,
+				childList: true,
+				subtree: true
+			});
+		</script>
+		<script
+			type="text/javascript"
+			src="https://dfp.suning.com/dfprs-collect/dist/fp.js?appCode=qEmt9X4YmoV2Vye8"
+		></script>
+	</body>
+</html>
